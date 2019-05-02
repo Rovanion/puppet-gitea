@@ -96,7 +96,12 @@ class gitea::install (
   String $service_provider       = $gitea::service_provider,
   String $service_mode           = $gitea::service_mode,
   ) {
-
+  notify {
+    default:
+      loglevel => debug;
+    "The base URL: ${base_url}":;
+    "The proxy URL: ${proxy}":;
+  }
   file { $repository_root:
     ensure => 'directory',
     owner  => $owner,
@@ -154,8 +159,12 @@ class gitea::install (
     }
 
     $source_url="${base_url}/${version}/gitea-${version}-${kernel_down}-${arch}"
-
-    remote_file { 'gitea':
+    notify {
+      default:
+        loglevel => debug;
+      "The source URL: ${source_url}":;
+    }
+      remote_file { 'gitea':
       ensure        => $package_ensure,
       path          => "${installation_directory}/gitea",
       source        => $source_url,
